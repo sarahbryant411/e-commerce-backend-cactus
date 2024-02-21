@@ -17,16 +17,16 @@ router.get("/", (req, res) => {
 });
 
 // get a single product
-router
-  .get("/:id", (req, res) => {
-    // find a single product by its `id`
-    // be sure to include its associated Category and Tag data
-    Product.findOne();
+router.get("/:id", (req, res) => {
+  // find a single product by its `id`
+  // be sure to include its associated Category and Tag data
+  Product.findOne({
     where: {
-      id: req.params.id;
+      id: req.params.id // Corrected the semicolon to a comma
     }
   })
   .then((productData) => {
+    // if there's no product with this id, return 404
     if (!productData) {
       res.status(404).json({ message: "No product found with this id" });
       return;
@@ -37,6 +37,7 @@ router
     console.log(err);
     res.status(500).json(err);
   });
+});
 
 // create new product
 router.post("/", (req, res) => {
@@ -114,24 +115,24 @@ router.put("/:id", (req, res) => {
     });
 });
 
+// delete one product by its `id` value
 router.delete("/:id", (req, res) => {
-  // delete one product by its `id` value
-  Product.delete({
+  Product.destroy({
     where: {
-      id: req.params.id,
-    },
+      id: req.params.id
+    }
   })
-    .then((productData) => {
-      if (!productData) {
-        res.status(404).json({ message: "No product found with this id" });
-        return;
-      }
-      res.json(productData);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+  .then((productData) => {
+    if (!productData) {
+      res.status(404).json({ message: "No product found with this id" });
+      return;
+    }
+    res.json(productData);
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 module.exports = router;
